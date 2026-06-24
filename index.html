@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Reimbursement — IDIO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <style>
+    @font-face {
+      font-display: swap; font-family: "Sligoil Micro"; font-weight: 400;
+      src: url(https://cdn.investigativedata.org/style/fonts/sligoil/web/Sligoil-Micro.woff2) format("woff2"),
+           url(https://cdn.investigativedata.org/style/fonts/sligoil/web/Sligoil-Micro.woff) format("woff");
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fff8f1;
+      --bg-secondary: #f2f2f2;
+      --bg-tertiary: #f9f9f9;
+      --text: #1a1a1a;
+      --text-secondary: #595959;
+      --text-tertiary: #949494;
+      --border: rgba(0,0,0,0.10);
+      --border-mid: rgba(0,0,0,0.18);
+      --border-strong: rgba(0,0,0,0.30);
+      --accent: #ff5f33;
+      --danger: #d74c26;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      --font-mono: 'Sligoil Micro', 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1f1f1f;
+        --bg-secondary: #2a2a2a;
+        --bg-tertiary: #141414;
+        --text: #fff8f1;
+        --text-secondary: #b4b4b4;
+        --text-tertiary: #6c6c6c;
+        --border: rgba(255,255,255,0.08);
+        --border-mid: rgba(255,255,255,0.14);
+        --border-strong: rgba(255,255,255,0.24);
+      }
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg-tertiary);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .app { max-width: 920px; margin: 0 auto; }
+
+    .section, .letterhead {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      color: var(--text-tertiary);
+      margin-bottom: 1rem;
+    }
+
+    .field-row { display: grid; gap: 12px; margin-bottom: 12px; }
+    .field-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+
+    label { font-size: 12px; color: var(--text-secondary); }
+
+    input, select, textarea {
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--text);
+      background: transparent;
+      border: 0.5px solid var(--border-mid);
+      border-radius: var(--radius-md);
+      padding: 7px 10px;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--border-strong); }
+    input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    select { cursor: pointer; }
+    textarea { resize: vertical; min-height: 72px; }
+
+    .letterhead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    .lh-company { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
+    .lh-meta { font-size: 11px; color: var(--text-secondary); line-height: 1.8; }
+    .lh-right { text-align: right; flex-shrink: 0; }
+    .lh-label { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.10em; margin-bottom: 5px; }
+    .claim-id-badge {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px 10px;
+      color: var(--text-secondary);
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      user-select: all;
+      display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .claim-id-badge:hover { border-color: var(--border-strong); color: var(--text); }
+    .lh-doc-type { font-size: 11px; color: var(--text-tertiary); margin-top: 8px; }
+
+    .table-wrap { overflow-x: auto; }
+    .expense-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; min-width: 820px; }
+    .expense-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0 6px 8px;
+    }
+    .expense-table td { padding: 4px 6px; vertical-align: middle; }
+    .expense-table td input, .expense-table td select { font-size: 13px; padding: 5px 8px; }
+    .amt-cell { display: flex; gap: 4px; align-items: center; }
+    .amt-cell .cur-sel { width: 68px; flex-shrink: 0; font-size: 12px; padding: 5px 4px; }
+    .amt-cell input { flex: 1; min-width: 0; }
+    .cat-sel { min-width: 150px; }
+    .vat-sel { min-width: 118px; }
+
+    .del-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      font-size: 17px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      border-radius: var(--radius-md);
+      transition: color 0.15s;
+    }
+    .del-btn:hover { color: var(--danger); }
+
+    .add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      font-family: var(--font);
+      color: var(--text-secondary);
+      background: none;
+      border: 0.5px dashed var(--border-mid);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .add-btn:hover { background: var(--bg-secondary); color: var(--text); border-color: var(--border-strong); }
+
+    .totals-block {
+      padding: 10px 6px 4px;
+      border-top: 0.5px solid var(--border);
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+    .subtotal-row, .grand-total-row { display: flex; gap: 16px; align-items: baseline; }
+    .subtotal-label { font-size: 12px; color: var(--text-secondary); min-width: 145px; text-align: right; }
+    .subtotal-amount { font-size: 14px; font-weight: 500; min-width: 95px; text-align: right; }
+    .grand-total-row { margin-top: 4px; padding-top: 6px; border-top: 0.5px solid var(--border); }
+    .grand-total-label { font-size: 13px; color: var(--text-secondary); }
+    .grand-total-amount { font-size: 24px; font-weight: 500; }
+    .mixed-note, .tax-note { font-size: 11px; color: var(--text-tertiary); max-width: 420px; text-align: right; }
+
+    .attach-zone {
+      border: 0.5px dashed var(--border-mid);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 13px;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .attach-zone:hover, .attach-zone.drag-over { background: var(--bg-secondary); border-color: var(--border-strong); color: var(--text); }
+    .attach-hint { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; display: block; }
+    .attach-warning { font-size: 11px; color: var(--text-tertiary); margin-top: 8px; line-height: 1.5; }
+    .attach-list { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .attach-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 7px 10px;
+      font-size: 13px;
+    }
+    .attach-item-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .attach-item-size { font-size: 11px; color: var(--text-secondary); flex-shrink: 0; }
+    .attach-remove {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      font-size: 15px;
+      display: flex;
+      padding: 2px;
+      flex-shrink: 0;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+    .attach-remove:hover { color: var(--danger); }
+
+    .sig-area {
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      font-size: 12px;
+      background: var(--bg-secondary);
+      gap: 6px;
+    }
+
+    .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 1rem; flex-wrap: wrap; }
+    .actions-left { display: flex; gap: 10px; flex: 1; flex-wrap: wrap; }
+    button {
+      font-family: var(--font);
+      font-size: 14px;
+      border-radius: var(--radius-md);
+      padding: 9px 18px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, opacity 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .btn-primary { background: var(--accent); color: #1a1a1a; border: none; font-weight: 500; }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-ghost { background: transparent; color: var(--text-secondary); border: 0.5px solid var(--border); }
+    .btn-ghost:hover { color: var(--text); border-color: var(--border-mid); background: var(--bg-secondary); }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: var(--text);
+      color: var(--bg);
+      font-size: 13px;
+      padding: 9px 20px;
+      border-radius: var(--radius-lg);
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .app { max-width: 100%; }
+      .actions, .add-btn, .del-btn, .attach-zone, .attach-remove, .toast { display: none !important; }
+      .section, .letterhead { break-inside: avoid; border: 1px solid #ccc !important; margin-bottom: 0.75rem; }
+      .expense-table { min-width: 0; table-layout: auto; }
+      .expense-table td input, .expense-table td select { border: none; background: none; pointer-events: none; padding-left: 0; }
+      .table-wrap { overflow: visible; }
+    }
+
+    @media (max-width: 640px) {
+      .field-row.cols-2 { grid-template-columns: 1fr; }
+      .letterhead { flex-direction: column; }
+      .lh-right { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="letterhead">
+    <div>
+      <div class="lh-company">IDIO Daten Import Export GmbH</div>
+      <div class="lh-meta">
+        Gottschedstr. 4, 13357 Berlin<br>
+        Registered: Berlin (Charlottenburg), HRB 252764<br>
+        Managing Directors: Karina Shedrofsky, Jan Strozyk, Simon Wörpel<br>
+        VAT Id: DE361014839
+      </div>
+    </div>
+    <div class="lh-right">
+      <div class="lh-label">Claim ID / Belegnummer</div>
+      <span class="claim-id-badge" id="claim-id" title="Click to copy"></span>
+      <div class="lh-doc-type">Travel reimbursement</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Claimant details</div>
+    <div class="field-row cols-2">
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" placeholder="Jane Smith">
+      </div>
+      <div class="field">
+        <label for="purpose">Purpose of trip</label>
+        <input type="text" id="purpose" placeholder="e.g. Client meeting in Amsterdam">
+      </div>
+    </div>
+    <div class="field-row cols-2">
+      <div class="field">
+        <label for="trip-from">Departure date</label>
+        <input type="date" id="trip-from">
+      </div>
+      <div class="field">
+        <label for="trip-to">Return date</label>
+        <input type="date" id="trip-to">
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Expenses</div>
+    <div class="table-wrap">
+      <table class="expense-table">
+        <colgroup>
+          <col style="width: 110px;">
+          <col>
+          <col style="width: 155px;">
+          <col style="width: 130px;">
+          <col style="width: 130px;">
+          <col style="width: 34px;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount gross</th>
+            <th>VAT</th>
+            <th>Category</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="expense-body"></tbody>
+      </table>
+    </div>
+    <button class="add-btn" type="button" onclick="addRow()">
+      <i class="ti ti-plus"></i> Add expense
+    </button>
+    <div class="totals-block" id="totals-block"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Attachments</div>
+    <div class="attach-zone" id="attach-zone"
+      onclick="document.getElementById('file-input').click()"
+      ondragover="handleDragOver(event)"
+      ondragleave="handleDragLeave(event)"
+      ondrop="handleDrop(event)">
+      <i class="ti ti-paperclip" style="font-size:18px; vertical-align:-3px; margin-right:4px;"></i>
+      Drag receipts here, or click to browse
+    </div>
+    <div class="attach-warning">Note: It saves receipt filenames only. Keep the original receipts and hand in with the exported PDF.</div>
+    <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;" onchange="handleFiles(this.files)">
+    <div class="attach-list" id="attach-list"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Notes</div>
+    <textarea id="notes" placeholder="Additional context, special circumstances, or receipt reference numbers…"></textarea>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Approval</div>
+    <div class="field-row cols-2">
+      <div class="field">
+        <label>Claimant signature</label>
+        <div class="sig-area"></div>
+        <div style="margin-top:8px;"><input type="text" id="sig-claimant-name" placeholder="Print name"></div>
+        <div style="margin-top:6px;"><input type="date" id="sig-claimant-date"></div>
+      </div>
+      <div class="field">
+        <label>Approved by</label>
+        <div class="sig-area"></div>
+        <div style="margin-top:8px;"><input type="text" id="sig-approver-name" placeholder="Print name"></div>
+        <div style="margin-top:6px;"><input type="date" id="sig-approver-date"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <div class="actions-left">
+      <button class="btn-ghost" type="button" onclick="saveDraft()"><i class="ti ti-download"></i> Save draft</button>
+      <button class="btn-ghost" type="button" onclick="document.getElementById('load-input').click()"><i class="ti ti-upload"></i> Load draft</button>
+      <input type="file" id="load-input" accept=".json" style="display:none;" onchange="loadDraft(this)">
+    </div>
+    <button class="btn-ghost" type="button" onclick="clearForm()">Clear</button>
+    <button class="btn-primary" type="button" onclick="window.print()"><i class="ti ti-printer"></i> Print / Save as PDF</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const CURRENCIES = ['EUR','USD','GBP','CHF','CAD','AUD','JPY','DKK','NOK','SEK','PLN','CZK'];
+  const SYM = { EUR:'€', USD:'$', GBP:'£', CHF:'Fr', CAD:'C$', AUD:'A$', JPY:'¥', DKK:'kr', NOK:'kr', SEK:'kr', PLN:'zł', CZK:'Kč' };
+  const VAT_RATES = [
+    { value: '0', label: '0%' },
+    { value: '0.07', label: '7%' },
+    { value: '0.19', label: '19%' }
+  ];
+  const CATEGORIES = [
+    'Hotel', 'Train / flight', 'Taxi / rideshare', 'Parking', 'Meal / hospitality',
+    'Per diem / Verpflegungspauschale', 'Mileage / Kilometerpauschale', 'Other travel cost'
+  ];
+  let attachments = [];
+
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2600);
+  }
+
+  function genClaimId() {
+    const now = new Date();
+    const yy = String(now.getFullYear()).slice(2);
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+    return `RK-${yy}${mm}-${rand}`;
+  }
+
+  const claimIdEl = document.getElementById('claim-id');
+  claimIdEl.textContent = genClaimId();
+  claimIdEl.addEventListener('click', () => {
+    navigator.clipboard?.writeText(claimIdEl.textContent).then(() => {
+      const orig = claimIdEl.textContent;
+      claimIdEl.textContent = 'Copied!';
+      setTimeout(() => claimIdEl.textContent = orig, 1200);
+    });
+  });
+
+  function addRow(date = '', desc = '', amt = '', cur = 'EUR', vat = '0', category = 'Other travel cost') {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="date"></td>
+      <td><input type="text" placeholder="e.g. Train Berlin–Hamburg"></td>
+      <td><div class="amt-cell">
+        <select class="cur-sel">${CURRENCIES.map(c => `<option>${c}</option>`).join('')}</select>
+        <input type="number" min="0" step="0.01" placeholder="0.00">
+      </div></td>
+      <td><select class="vat-sel">${VAT_RATES.map(r => `<option value="${r.value}">${r.label}</option>`).join('')}</select></td>
+      <td><select class="cat-sel">${CATEGORIES.map(c => `<option>${c}</option>`).join('')}</select></td>
+      <td><button class="del-btn" type="button" aria-label="Remove row"><i class="ti ti-x"></i></button></td>`;
+    const [dateIn, descIn, amtIn] = tr.querySelectorAll('input');
+    const curSel = tr.querySelector('.cur-sel');
+    const vatSel = tr.querySelector('.vat-sel');
+    const catSel = tr.querySelector('.cat-sel');
+    dateIn.value = date; descIn.value = desc; amtIn.value = amt;
+    curSel.value = cur; vatSel.value = vat; catSel.value = category;
+    tr.querySelector('.del-btn').addEventListener('click', () => { tr.remove(); recalc(); });
+    tr.querySelectorAll('input, select').forEach(el =>
+      el.addEventListener(el.type === 'number' ? 'input' : 'change', recalc));
+    catSel.addEventListener('change', () => { if (catSel.value.includes('Pauschale')) vatSel.value = '0'; });
+    document.getElementById('expense-body').appendChild(tr);
+    recalc();
+  }
+
+  function money(amount, currency) {
+    return `${SYM[currency] || currency}${amount.toFixed(2)}`;
+  }
+
+  function recalc() {
+    const totals = {};
+    document.querySelectorAll('#expense-body tr').forEach(tr => {
+      const cur = tr.querySelector('.cur-sel')?.value;
+      const gross = parseFloat(tr.querySelector('input[type="number"]')?.value) || 0;
+      const vatRate = parseFloat(tr.querySelector('.vat-sel')?.value) || 0;
+      if (!cur || !gross) return;
+      const vat = vatRate ? gross - gross / (1 + vatRate) : 0;
+      if (!totals[cur]) totals[cur] = { gross: 0, vat: 0, net: 0 };
+      totals[cur].gross += gross;
+      totals[cur].vat += vat;
+      totals[cur].net += gross - vat;
+    });
+
+    const block = document.getElementById('totals-block');
+    const keys = Object.keys(totals);
+    if (!keys.length) {
+      block.innerHTML = '<div class="grand-total-row"><span class="grand-total-label">Total gross</span><span class="grand-total-amount">—</span></div>';
+      return;
+    }
+
+    const single = keys.length === 1;
+    block.innerHTML = keys.map(c =>
+      ['Net', 'VAT', 'Gross'].map(label => {
+        const isGrand = label === 'Gross' && single;
+        const cls = isGrand ? 'grand-total' : 'subtotal';
+        return `<div class="${cls}-row"><span class="${cls}-label">${label} ${c}</span><span class="${cls}-amount">${money(totals[c][label.toLowerCase()], c)}</span></div>`;
+      }).join('')
+    ).join('') +
+    (!single ? '<div class="mixed-note">Mixed currencies — totals are shown separately per currency.</div>' : '') +
+    '<div class="tax-note">VAT is calculated from gross amounts where VAT is marked as included. Per diem and mileage entries should usually use 0% / no VAT.</div>';
+  }
+
+  function getState() {
+    const rows = [];
+    document.querySelectorAll('#expense-body tr').forEach(tr => {
+      rows.push({
+        date: tr.querySelector('input[type="date"]')?.value || '',
+        description: tr.querySelector('input[type="text"]')?.value || '',
+        currency: tr.querySelector('.cur-sel')?.value || 'EUR',
+        amount: tr.querySelector('input[type="number"]')?.value || '',
+        vat: tr.querySelector('.vat-sel')?.value || '0',
+        category: tr.querySelector('.cat-sel')?.value || 'Other travel cost'
+      });
+    });
+    return {
+      version: 2,
+      claimId: claimIdEl.textContent,
+      savedAt: new Date().toISOString(),
+      name: document.getElementById('name').value,
+      purpose: document.getElementById('purpose').value,
+      tripFrom: document.getElementById('trip-from').value,
+      tripTo: document.getElementById('trip-to').value,
+      notes: document.getElementById('notes').value,
+      sigClaimantName: document.getElementById('sig-claimant-name').value,
+      sigClaimantDate: document.getElementById('sig-claimant-date').value,
+      sigApproverName: document.getElementById('sig-approver-name').value,
+      sigApproverDate: document.getElementById('sig-approver-date').value,
+      expenses: rows,
+      attachmentNames: attachments.map(f => f.name)
+    };
+  }
+
+  function applyState(s) {
+    if (s.claimId) claimIdEl.textContent = s.claimId;
+    document.getElementById('name').value = s.name || '';
+    document.getElementById('purpose').value = s.purpose || '';
+    document.getElementById('trip-from').value = s.tripFrom || '';
+    document.getElementById('trip-to').value = s.tripTo || '';
+    document.getElementById('notes').value = s.notes || '';
+    document.getElementById('sig-claimant-name').value = s.sigClaimantName || '';
+    document.getElementById('sig-claimant-date').value = s.sigClaimantDate || '';
+    document.getElementById('sig-approver-name').value = s.sigApproverName || '';
+    document.getElementById('sig-approver-date').value = s.sigApproverDate || '';
+    document.getElementById('expense-body').textContent = '';
+    (s.expenses || []).forEach(r => addRow(r.date, r.description, r.amount, r.currency, r.vat || '0', r.category || 'Other travel cost'));
+    recalc();
+  }
+
+  function saveDraft() {
+    const state = getState();
+    const name = document.getElementById('name').value.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() || 'draft';
+    const filename = `${state.claimId}-${name}.json`;
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast('Draft saved as ' + filename);
+  }
+
+  function loadDraft(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const state = JSON.parse(e.target.result);
+        if (!state.version || !state.claimId) throw new Error('Unrecognised format');
+        applyState(state);
+        const note = state.attachmentNames?.length ? ` Re-attach: ${state.attachmentNames.join(', ')}` : '';
+        toast('Draft loaded.' + note);
+      } catch {
+        toast('Could not read draft — invalid file.');
+      }
+    };
+    reader.readAsText(file);
+    input.value = '';
+  }
+
+  function formatSize(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+    return (b / 1048576).toFixed(1) + ' MB';
+  }
+
+  function renderAttachments() {
+    const list = document.getElementById('attach-list');
+    list.innerHTML = '';
+    attachments.forEach((f, i) => {
+      const div = document.createElement('div');
+      div.className = 'attach-item';
+      div.innerHTML = `<i class="ti ${f.type === 'application/pdf' ? 'ti-file-type-pdf' : 'ti-photo'}" style="font-size:16px;color:var(--text-secondary);flex-shrink:0"></i><span class="attach-item-name"></span><span class="attach-item-size">${formatSize(f.size)}</span><button class="attach-remove" type="button" aria-label="Remove"><i class="ti ti-x"></i></button>`;
+      div.querySelector('.attach-item-name').textContent = f.name;
+      div.querySelector('.attach-remove').addEventListener('click', () => { attachments.splice(i, 1); renderAttachments(); });
+      list.appendChild(div);
+    });
+  }
+
+  function handleFiles(files) {
+    Array.from(files).forEach(f => {
+      const allowed = ['application/pdf', 'image/jpeg', 'image/png'];
+      const byExtension = /\.(pdf|jpe?g|png)$/i.test(f.name);
+      if ((allowed.includes(f.type) || byExtension) && !attachments.find(a => a.name === f.name && a.size === f.size)) attachments.push(f);
+    });
+    renderAttachments();
+    document.getElementById('file-input').value = '';
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    document.getElementById('attach-zone').classList.add('drag-over');
+  }
+  function handleDragLeave() {
+    document.getElementById('attach-zone').classList.remove('drag-over');
+  }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('attach-zone').classList.remove('drag-over');
+    handleFiles(e.dataTransfer.files);
+  }
+
+  function clearForm() {
+    if (!confirm('Clear all data and start a new claim?')) return;
+    ['name','trip-from','trip-to','purpose','notes','sig-claimant-name','sig-claimant-date','sig-approver-name','sig-approver-date']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('expense-body').textContent = '';
+    attachments = [];
+    renderAttachments();
+    claimIdEl.textContent = genClaimId();
+    recalc();
+  }
+
+  addRow();
+  addRow();
+</script>
+</body>
+</html>
